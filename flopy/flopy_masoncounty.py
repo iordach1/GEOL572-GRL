@@ -21,12 +21,6 @@ import pyproj
 import pandas as pd
 #----------------------------------------------------------------------------
 
-#%%Paths
-model_corners_path = r"C:\Users\iordach1\Desktop\PYTHON\python37\GEOL572-GRL\model_input\model_coord.csv"
-
-#%%
-
-
 
 '''Create a MODFLOW model object and run with MODFLOW 2005.'''
 #----------------------------------------------------------------------------
