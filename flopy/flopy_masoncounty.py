@@ -19,6 +19,11 @@ import pyproj
 import pandas as pd
 #----------------------------------------------------------------------------
 
+#%%Paths
+model_corners_path = r"C:\Users\iordach1\Desktop\PYTHON\python37\GEOL572-GRL\model_input\model_coord.csv"
+
+#%%
+
 
 
 '''Create a MODFLOW model object and run with MODFLOW 2005.'''
@@ -28,7 +33,8 @@ m = flopy.modflow.Modflow(modelname, exe_name = 'mf2005')
 #----------------------------------------------------------------------------
 
 
-
+#Extract model bounds
+model_bounds_df = pd.read_csv(model_corners_path)
 '''Create the Discretization package'''
 #----------------------------------------------------------------------------
 # Define model domain in lat/long coordinates
