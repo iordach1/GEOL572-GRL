@@ -9,39 +9,35 @@
 
 
 
-'''Import packages.'''
+#%%Import packages.
 #----------------------------------------------------------------------------
-import flopy
+import flopy, pyproj, sys, os
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib as mp
-import pyproj
 import pandas as pd
 #----------------------------------------------------------------------------
 
+#Silly, silly, silly
+sys.path.append(os.path.dirname(os.getcwd()))
+
 #%%Paths
-model_corners_path = r"C:\Users\iordach1\Desktop\PYTHON\python37\GEOL572-GRL\model_input\model_coord.csv"
+model_corners_path = r"{0}\model_input\model_coord.csv".format(sys.path[-1])
 
-#%%else
-
-
-
-'''Create a MODFLOW model object and run with MODFLOW 2005.'''
+#%%Create a MODFLOW model object and run with MODFLOW 2005.
 #----------------------------------------------------------------------------
 modelname = "my_model"
 m = flopy.modflow.Modflow(modelname, exe_name = 'mf2005')
 #----------------------------------------------------------------------------
 
+#%%Extract model bounds
+model_bounds_df = pd.read_csv(
+                        model_corners_path,
+                        index_col = 0
+                        )
 
-#Extract model bounds
-model_bounds_df = pd.read_csv(model_corners_path, index_col = 0)
-'''Create the Discretization package'''
+#%%Create the Discretization package
 #----------------------------------------------------------------------------
-# Define model domain in lat/long coordinates
-sw_lat = model_bounds_df['SW']['LAT'] #southwest latitude
-sw_long = model_bounds_df['SW']['LONG'] #southwest longitude
-ne_lat = model_bounds_df['NE']['LAT'] #northeast latitude
-ne_long = model_bounds_df['NE']['LONG'] #northeast longitude
 
 # In Illinois, the Illimap projection is used to minimize distortion
 # See https://www.spatialreference.org/ref/sr-org/7772/ for details
@@ -59,11 +55,11 @@ D = {'proj': 'lcc', # define projection as Lambert Conformal Conic
 prj = pyproj.Proj(D) # Create a projection object that will be used to convert lat/long to illimap
 
 #Define the northeastern coordintes, round to nearest 10,000
-nex, ney = prj(ne_long, ne_lat) # this will return meters
+nex, ney = prj(model_bounds_df['NE']['LONG'], model_bounds_df['NE']['LAT']) # this will return meters
 nex, ney = round(nex/0.3048006096012192,-4), round(ney/0.3048006096012192,-4) # convert to feet
 
 #Define the southwestern coordinates, round to nearest 10,000
-swx, swy = prj(sw_long, sw_lat) # this will return meters
+swx, swy = prj(model_bounds_df['SW']['LONG'], model_bounds_df['SW']['LAT']) # this will return meters
 swx, swy = round(swx/0.3048006096012192,-4), round(swy/0.3048006096012192,-4) # convert to feet
 
 # Assign Discretization variables
@@ -88,8 +84,7 @@ dis = flopy.modflow.ModflowDis(model=m, nlay=nlay, nrow=nrow, ncol=ncol,
                                nper=nper, steady=steady)
 #----------------------------------------------------------------------------
 
-
-'''Create the Basic Package, which contains ibound and starting heads'''
+#%%Create the Basic Package, which contains ibound and starting heads
 #----------------------------------------------------------------------------
 # Create ibound as array of ints (1), indicating all cells are active
 ibound = np.ones((nlay, nrow, ncol), dtype=np.int32)
@@ -105,10 +100,8 @@ strt = 500*np.ones((nlay, nrow, ncol), dtype=np.float32) #set every cell to 5.0
 bas = flopy.modflow.ModflowBas(m, ibound=ibound, strt=strt)
 #----------------------------------------------------------------------------
 
-
-
-'''Create the Layer Property Flow Package, which contains information about
-hydruaulic conductivity and other information about how to calculate flow'''
+#%%Create the Layer Property Flow Package, which contains information about
+##hydraulic conductivity and other information about how to calculate flow
 #----------------------------------------------------------------------------
 hk = 500.*np.ones((nlay,nrow,ncol), dtype=np.float32) #define horizontal hydraulic conductivity
 vk = np.ones((nlay,nrow,ncol), dtype=np.float32) #define vertical hydraulic conductivity
@@ -121,17 +114,13 @@ laytyp = np.ones((nlay,), dtype=np.int32)
 lpf = flopy.modflow.ModflowLpf(model=m, hk=hk, vka=vk, laytyp=laytyp, ipakcb=1)
 #----------------------------------------------------------------------------
 
-
-
-'''Create the recharge package'''
+#%%Create the recharge package
 #----------------------------------------------------------------------------
 # assign a uniform recharge of 0.001 ft/day
 rch = flopy.modflow.mfrch.ModflowRch(model=m,nrchop=3,rech=1e-3)
 #----------------------------------------------------------------------------
 
-
-
-'''Create the river package'''
+#%%Create the river package
 #----------------------------------------------------------------------------
 # import stage, stream order, stream length, and centroid coordinate of rivers
 dfriv = pd.read_csv('ModelGrid_2500ft_river_cells_centroids.csv')
@@ -164,9 +153,7 @@ riverdata = {0: arriv} # stress period 0 is the key
 flopy.modflow.mfriv.ModflowRiv(model=m, ipakcb=None, stress_period_data=riverdata)
 #----------------------------------------------------------------------------
 
-
-
-'''Create the well package'''
+#%%Create the well package
 #----------------------------------------------------------------------------
 # assign the well data to a dictionary for the first stress period
 welldata = {0: [0,10,20,-133000]} # well in layer 1, row 6, col 6, pumping -500 cfd
@@ -174,9 +161,7 @@ welldata = {0: [0,10,20,-133000]} # well in layer 1, row 6, col 6, pumping -500 
 flopy.modflow.mfwel.ModflowWel(model=m, ipakcb=None, stress_period_data=welldata)
 #----------------------------------------------------------------------------
 
-
-
-'''Create the Output Control Package'''
+#%%Create the Output Control Package
 #----------------------------------------------------------------------------
 #create oc stress period data. 
 spd = {(0, 0): ['print head', 'print budget', 'save head', 'save budget']}
@@ -184,24 +169,18 @@ spd = {(0, 0): ['print head', 'print budget', 'save head', 'save budget']}
 oc = flopy.modflow.ModflowOc(model=m, stress_period_data=spd, compact=True)
 #----------------------------------------------------------------------------
 
-
-
-'''Create the PCG Solver Object'''
+#%%Create the PCG Solver Object
 #----------------------------------------------------------------------------
 # for the time being, we will use default settings with the solver
 pcg = flopy.modflow.ModflowPcg(model=m)
 #----------------------------------------------------------------------------
 
-
-
-'''Write MODFLOW input files.'''
+#%%Write MODFLOW input files.
 #----------------------------------------------------------------------------
 m.write_input()
 #----------------------------------------------------------------------------
 
-
-
-'''Run the model'''
+#%%Run the model
 #----------------------------------------------------------------------------
 # Executve the model run
 success, mfoutput = m.run_model(pause=False, report=True)
@@ -209,10 +188,8 @@ success, mfoutput = m.run_model(pause=False, report=True)
 if not success:
     raise Exception('MODFLOW did not terminate normally.')
 #----------------------------------------------------------------------------
-    
-    
-    
-'''Extract binary data from head and flow files'''
+
+#%%Extract binary data from head and flow files
 #----------------------------------------------------------------------------
 #extract binary data from head file as flopy head object
 headobj = flopy.utils.binaryfile.HeadFile(modelname+'.hds')
@@ -226,9 +203,7 @@ frf = budgobj.get_data(text='flow right face', totim=1.0)
 fff = budgobj.get_data(text='flow front face', totim=1.0)
 #----------------------------------------------------------------------------
 
-
-
-'''Plot grid and boundary conditions'''
+#%%Plot grid and boundary conditions
 #----------------------------------------------------------------------------
 plt.figure(figsize=(10,10)) #create 10 x 10 figure
 modelmap = flopy.plot.PlotMapView(model=m, layer=0)
@@ -246,9 +221,7 @@ plt.legend(handles=[mp.patches.Patch(color='blue',label='Const. Head',ec='black'
                    bbox_to_anchor=(1.5,1.0))
 #----------------------------------------------------------------------------
 
-
-
-'''Plot results'''
+#%%Plot results
 #----------------------------------------------------------------------------
 plt.figure(figsize=(10,10)) #create 10 x 10 figure
 modelmap = flopy.plot.map.PlotMapView(model=m, layer=0) #use plotmapview to attach plot to model
@@ -264,5 +237,4 @@ rvr = modelmap.plot_bc(ftype='RIV')
 plt.xlabel('Lx (ft)',fontsize = 14)
 plt.ylabel('Ly (ft)',fontsize = 14)
 plt.title('Steady-State Model, Flow(ft^3/d) and Head(ft) Results', fontsize = 15, fontweight = 'bold')
-
 #----------------------------------------------------------------------------
