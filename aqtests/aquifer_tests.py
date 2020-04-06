@@ -43,8 +43,7 @@ b = 100 #Average aquifer thickness; ft
 Q = 1200*192.5/(24*60) #Pumping rate; ft^3/min
 
 #Crop the dataset to contain a subset of data points.  The Theis curve will be fit to this subset.
-#sankoty_subset=sankoty_df["drawdown_ft"][2:5] #This was the subset of data points used in the 1980 test, but returns a storage coefficient that is very low.
-sankoty_subset=sankoty_df["drawdown_ft"][9:13] #This subset of data is also linear and returns a slightly more realistic storage coefficient
+sankoty_subset=sankoty_df["drawdown_ft"][2:6] #This was the subset of data points used in the 1980 test, but returns a storage coefficient that is somewhat lower than expected.
 
 #Define a function based on the Theis equation to fit to the observed data
 def Theis(t,S,T):
@@ -74,7 +73,7 @@ plt.ylabel("Drawdown (ft)")
 plt.title("Sankoty aquifer test: observed drawdown with fitted Theis solution")
 plt.show()
 
-print('The storage coefficient S is found to be '+str(round(popt[0],8))+'.')
+print('The storage coefficient S is found to be '+str(round(popt[0],10))+'.')
 print('The transmissivity T is found to be '+str(int(round(popt[1])))+' ft^2/d.')
 
 #S should be between 10^-5 and 10^-3 (roughly)
@@ -113,7 +112,7 @@ Q = 863*192.5/(24*60) #Pumping rate; ft^3/min
 #Data points before t=95 min may need to be neglected when fitting the Theis curve to the data.
 
 #Crop the dataset to contain a subset of data points.  The Theis curve will be fit to this subset.
-tampico_subset=tampico_df["drawdown_ft"][2:6] #This was the subset of data points used in the 1962 aquifer test
+tampico_subset=tampico_df["drawdown_ft"][2:7] #This was the subset of data points used in the 1962 aquifer test
 
 #Fit the "theis" function, defined in the previous code block, to the chosen subset of data ("tampico_subset")
 popt,pcov=spo.curve_fit(Theis,tampico_subset.index,tampico_subset,p0=[10**-9,10**-9])
