@@ -67,10 +67,11 @@ for value in xx:
 popt[1]=popt[1]*60*24 #Convert transmissivity from ft^2/min to ft^2/d
 
 #Plot the observed data and the fitted Theis curve together.
-plt.semilogx(sankoty_subset,"o",xx,yy)
+plt.semilogx(sankoty_df,"o",xx,yy)
 plt.xlabel("Time (min)")
 plt.ylabel("Drawdown (ft)")
-plt.title("Sankoty aquifer test: observed drawdown with fitted Theis solution")
+plt.title("Sankoty aquifer test: observed drawdown with fitted Theis curve")
+plt.ylim(8,10)
 plt.show()
 
 print('The storage coefficient S is found to be '+str(round(popt[0],10))+'.')
@@ -131,10 +132,11 @@ for value in xx:
 popt[1]=popt[1]*60*24 #Convert transmissivity from ft^2/min to ft^2/d
 
 #Plot the observed data and the fitted Theis curve together.
-plt.semilogx(tampico_subset,"o",xx,yy)
+plt.semilogx(tampico_df.drawdown_ft,"o",xx,yy)
 plt.xlabel("Time (min)")
 plt.ylabel("Drawdown (ft)")
-plt.title("Sankoty aquifer test: observed drawdown with fitted Theis solution")
+plt.title("Tampico aquifer test: observed drawdown with fitted Theis curve")
+plt.ylim(3,7)
 plt.show()
 
 print('The storage coefficient S is found to be '+str(round(popt[0],20))+'.')
