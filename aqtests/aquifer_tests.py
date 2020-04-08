@@ -39,7 +39,7 @@ plt.show()
 # Define parameters
 #Note that for the data used here, the test well doubled as the observation well
 r = 8/12 #Radius of the screen in the test well; ft
-b = 100 #Average aquifer thickness; ft
+#b = 100 #Average aquifer thickness; ft
 Q = 1200*192.5/(24*60) #Pumping rate; ft^3/min
 
 #Crop the dataset to contain a subset of data points.  The Theis curve will be fit to this subset.
@@ -74,6 +74,8 @@ plt.title("Sankoty aquifer test: observed drawdown with fitted Theis curve")
 plt.ylim(8,10)
 plt.show()
 
+print()
+print('Sankoty Aquifer:')
 print('The storage coefficient S is found to be '+str(round(popt[0],10))+'.')
 print('The transmissivity T is found to be '+str(int(round(popt[1])))+' ft^2/d.')
 
@@ -105,7 +107,7 @@ plt.show()
 # Define parameters
 #Note that for this aquifer test, the test well doubled as the observation well
 r = 10/12 #Radius of the screen in the test well; ft
-b = 40 #Average aquifer thickness; ft
+#b = 40 #Average aquifer thickness; ft
 Q = 863*192.5/(24*60) #Pumping rate; ft^3/min
 
 #Note that in this aquifer test, the pumping rate was less than Q for about 90 minutes.
@@ -139,6 +141,8 @@ plt.title("Tampico aquifer test: observed drawdown with fitted Theis curve")
 plt.ylim(3,7)
 plt.show()
 
+print()
+print('Tampico Aquifer:')
 print('The storage coefficient S is found to be '+str(round(popt[0],20))+'.')
 print('The transmissivity T is found to be '+str(int(round(popt[1])))+' ft^2/d.')
 
