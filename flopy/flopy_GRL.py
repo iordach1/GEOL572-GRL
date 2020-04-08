@@ -78,10 +78,20 @@ steady = [True] #specify if stress period is transient or steady-state
 # create flopy discretization object
 # length and time are feet (1) and days (4).
 # See https://water.usgs.gov/ogw/modflow/MODFLOW-2005-Guide/index.html?dis.htm 
-dis = flopy.modflow.ModflowDis(model=m, nlay=nlay, nrow=nrow, ncol=ncol, 
-                               delr=dx, delc=dy, top=ztop, botm=zbot, 
-                               itmuni = 4, lenuni = 1, 
-                               nper=nper, steady=steady)
+dis = flopy.modflow.ModflowDis(
+                                model=m,
+                                nlay=nlay,
+                                nrow=nrow,
+                                ncol=ncol,
+                                delr=dx,
+                                delc=dy,
+                                top=ztop,
+                                botm=zbot,
+                                itmuni = 4,
+                                lenuni = 1, 
+                                nper=nper,
+                                steady=steady
+                            )
 #----------------------------------------------------------------------------
 
 #%%Create the Basic Package, which contains ibound and starting heads
