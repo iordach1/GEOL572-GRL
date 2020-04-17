@@ -29,8 +29,6 @@ m = flopy.modflow.Modflow(modelname, exe_name = 'mf2005')
 #----------------------------------------------------------------------------
 
 
-#Extract model bounds
-model_bounds_df = pd.read_csv(model_corners_path)
 '''Create the Discretization package'''
 #----------------------------------------------------------------------------
 # Define model domain in lat/long coordinates

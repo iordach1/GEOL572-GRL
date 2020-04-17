@@ -15,6 +15,7 @@ import flopy
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib as mp
+import pyproj
 #----------------------------------------------------------------------------
 
 
@@ -25,7 +26,47 @@ modelname = "my_model"
 m = flopy.modflow.Modflow(modelname, exe_name = 'mf2005')
 #----------------------------------------------------------------------------
 
+# Define model domain in lat/long coordinates
+sw_lat = 39.9727 #southwest latitude
+sw_long = -90.537 #southwest longitude
+ne_lat = 40.6657 #northeast latitude
+ne_long = -89.1371 #northeast longitude
 
+# In Illinois, the Illimap projection is used to minimize distortion
+# See https://www.spatialreference.org/ref/sr-org/7772/ for details
+# Also see http://library.isgs.illinois.edu/Pubs/pdfs/circulars/c451.pdf
+# Values originate from here (https://www.spatialreference.org/ref/sr-org/7772/html/)
+D = {'proj': 'lcc', # define projection as Lambert Conformal Conic
+        'ellps': 'clrk66', # Use the Clarke 1866 ellipsoid
+        'lon_0': -89.5, #Central Meridian
+        'lat_0': 33, #Latitude of Origin
+        'lat_1': 33, #Standard Parallel 1
+        'lat_2': 45, #Standard Parallel 2
+        'x_0': 2999994*0.3048006096012192, # starting x coordinate is in feet, Python expects meters
+        'y_0': 0} # starting y coordinate}
+
+prj = pyproj.Proj(D) # Create a projection object that will be used to convert lat/long to illimap
+
+#Define the northeastern coordintes, round to nearest 10,000
+nex, ney = prj(ne_long, ne_lat) # this will return meters
+nex, ney = round(nex/0.3048006096012192,-4), round(ney/0.3048006096012192,-4) # convert to feet
+
+#Define the southwestern coordinates, round to nearest 10,000
+swx, swy = prj(sw_long, sw_lat) # this will return meters
+swx, swy = round(swx/0.3048006096012192,-4), round(swy/0.3048006096012192,-4) # convert to feet
+
+# Assign Discretization variables
+Lx = nex-swx # Width of the model domain
+Ly = ney-swy # Height of the model domain
+ztop = 0. # Model top elevation
+zbot = -50. # Model bottom elevation
+nlay = 1 # Number of model layers
+dx = 2500 # grid spacing (x-direction)
+dy = 2500 # grid spacing (y-direction)
+nrow = int(Ly/dy) # Number of rows
+ncol = int(Lx/dx) # Number of columns
+nper = 1 #specify number of stress periods
+steady = [True] #specify if stress period is transient or steady-state
 
 '''Create the Discretization package'''
 #----------------------------------------------------------------------------
