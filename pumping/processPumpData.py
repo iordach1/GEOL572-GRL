@@ -50,9 +50,6 @@ df.to_csv("Pumpage_Data_GRL_mod.csv")
 
 
 for row in df.sample(5).iterrows():
-    #print(row[1])
-    x=static_df[static_df['p_num'] == row[1][0]].iloc[:,7:].values.tolist()[0]
-    print(x)
     plt.figure(figsize=(17,11))
     plt.plot([x for x in range(1981, 2019)], row[1][7:], '--', label = 'mod', linewidth =3)
     plt.plot([x for x in range(1981, 2019)], static_df[static_df['p_num'] == row[1][0]].iloc[:,7:].values.tolist()[0], label = 'orig', linewidth = 3)
