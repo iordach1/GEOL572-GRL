@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 
 #%%user functions
 def estimate_irr_acIN(acres, inches):   return acres * inches
+def gpa_to_cfd(gpa): return (gpa * 0.133681)/365.25
 
 #%%read in data
 input_file_IWIP = "Pumpage_Data_GRL.csv"
@@ -79,6 +80,7 @@ iwip_rename_dict = {list(IWIP_df.columns)[0]: 'wellID',
 
 out_df = IWIP_df.iloc[:, [0,5,6,4,len(IWIP_df.columns)-1]].rename(columns = iwip_rename_dict)
 out_df = out_df.append(agIRR_df.iloc[:, [4,1,2,5,6]], ignore_index = True)
+out_df['Q'] = gpa_to_cfd(out_df['Q'])
 
 out_df.to_csv("processPumpData.csv")
 
