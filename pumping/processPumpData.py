@@ -11,6 +11,7 @@ import matplotlib.pyplot as plt
 
 #%%user functions
 def estimate_irr_acIN(acres, inches):   return acres * inches
+def estimate_irr_galAcre(acres):    return 750000 * acres
 def gpa_to_cfd(gpa): return -(gpa * 0.133681)/365.25
 
 #%%read in data
@@ -23,7 +24,8 @@ agIRR_df = pd.read_csv(input_file_agIRR, header=0, names = ['AREA_ACRES', 'x', '
 agIRR_df['wellID'] = agIRR_df.index
 agIRR_df['wellID'] = agIRR_df['wellID'].apply(lambda x: "i_{0:06d}".format(x))
 agIRR_df['z'] = -999
-agIRR_df['Q'] = estimate_irr_acIN(agIRR_df['AREA_ACRES'], 30*12)
+#agIRR_df['Q'] = estimate_irr_acIN(agIRR_df['AREA_ACRES'], 30*12)
+agIRR_df['Q'] = estimate_irr_galAcre(agIRR_df['AREA_ACRES'])
 
 static_df = IWIP_df.copy(deep = 'True')
 
