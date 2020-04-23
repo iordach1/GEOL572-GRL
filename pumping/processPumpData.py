@@ -6,11 +6,12 @@ Created on Mon Mar 16 14:48:57 2020
 """
 
 import pandas as pd
+import json
 import matplotlib.pyplot as plt
 
 #%%user functions
 def estimate_irr_acIN(acres, inches):   return acres * inches
-def gpa_to_cfd(gpa): return (gpa * 0.133681)/365.25
+def gpa_to_cfd(gpa): return -(gpa * 0.133681)/365.25
 
 #%%read in data
 input_file_IWIP = "Pumpage_Data_GRL.csv"
@@ -82,7 +83,20 @@ out_df = IWIP_df.iloc[:, [0,5,6,4,len(IWIP_df.columns)-1]].rename(columns = iwip
 out_df = out_df.append(agIRR_df.iloc[:, [4,1,2,5,6]], ignore_index = True)
 out_df['Q'] = gpa_to_cfd(out_df['Q'])
 
+#csv
 out_df.to_csv("processPumpData.csv")
+print("exported processed data to csv")
+
+lrcq = {0:[]}
+for row in out_df.iterrows():
+    lrcq[0].append(list(row[1][[3,2,1,4]]))
+    
+js_pump = json.dumps(lrcq, indent = 4)
+
+#json
+with open("processPumpData.json", "w") as outfile: 
+    outfile.write(js_pump)
+print("exported processed data to json")
 
 #%%plots
 
