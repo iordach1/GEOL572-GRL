@@ -7,10 +7,10 @@ Created on Mon Mar 16 14:48:57 2020
 
 import pandas as pd
 import json
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 
 #%%user functions
-def estimate_irr_acIN(acres, inches):   return acres * inches
+def estimate_irr_acIN(acres, inches):   return acres * inches #* gal/in/acre
 def estimate_irr_galAcre(acres):    return 750000 * acres
 def gpa_to_cfd(gpa): return -(gpa * 0.133681)/365.25
 
