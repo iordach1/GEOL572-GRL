@@ -11,7 +11,7 @@ import json
 
 #%%user functions
 def estimate_irr_acIN(acres, inches):   return acres * inches * 27000
-def estimate_irr_galAcre(acres):    return 250000 * acres
+def estimate_irr_galAcre(acres):    return 275000 * acres
 def gpa_to_cfd(gpa): return -(gpa * 0.133681)/365.25
 
 #%%read in data
