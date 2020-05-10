@@ -11,7 +11,7 @@ import json
 
 #%%user functions
 def estimate_irr_acIN(acres, inches):   return acres * inches * 27000
-def estimate_irr_galAcre(acres):    return 325000 * acres
+def estimate_irr_galAcre(acres):    return 200000 * acres
 def gpa_to_cfd(gpa): return -(gpa * 0.133681)/365.25
 
 #%%read in data
@@ -82,6 +82,23 @@ iwip_rename_dict = {list(IWIP_df.columns)[0]: 'wellID',
                     list(IWIP_df.columns)[len(IWIP_df.columns)-1]: 'Q'}
 
 out_df = IWIP_df.iloc[:, [0,5,6,4,len(IWIP_df.columns)-1]].rename(columns = iwip_rename_dict)
+out_df['Q'] = gpa_to_cfd(out_df['Q'])
+
+#csv
+out_df.to_csv("processPumpData.csv")
+print("exported processed data to csv")
+
+lrcq = {0:[]}
+for row in out_df.iterrows():
+    lrcq[0].append(list(row[1][[3,2,1,4]]))
+    
+js_pump = json.dumps(lrcq, indent = 4)
+
+#json
+with open("processPumpData_SPRING.json", "w") as outfile: 
+    outfile.write(js_pump)
+print("exported processed data to json [\"SPRING\"]")
+
 out_df = out_df.append(agIRR_df.iloc[:, [4,1,2,5,6]], ignore_index = True)
 out_df['Q'] = gpa_to_cfd(out_df['Q'])
 
@@ -96,9 +113,9 @@ for row in out_df.iterrows():
 js_pump = json.dumps(lrcq, indent = 4)
 
 #json
-with open("processPumpData.json", "w") as outfile: 
+with open("processPumpData_SUMMER.json", "w") as outfile: 
     outfile.write(js_pump)
-print("exported processed data to json")
+print("exported processed data to json [\"SUMMER\"]")
 
 #%%plots
 
