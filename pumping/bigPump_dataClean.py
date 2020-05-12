@@ -95,7 +95,7 @@ for row in facility_pump.head().iterrows():
     plt.plot([x for x in range(1981, 2020)], static_df[static_df['isws_facility_id'] == row[1][0]].iloc[:,2:-1].values.tolist()[0], label = 'Original', linewidth = 5)
     plt.title("IWIP Facility: {0} [{1}]".format(row[1][0], row[1][1]), fontsize = 24)
     plt.xlim(1981, 2018)
-    plt.subplot().set_ylabel('Pumpage [GALLONS]', fontsize = 20)#ylabel
+    plt.subplot().set_ylabel('Annual Pumpage [GALLONS]', fontsize = 20)#ylabel
     plt.subplot().tick_params(axis='both', which='major', labelsize=16)
     plt.subplot().tick_params(axis='both', which='minor', labelsize=12)
     plt.subplot().yaxis.get_offset_text().set_size(16)
