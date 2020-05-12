@@ -61,7 +61,7 @@ static_df['max_pump'] = max_pump
 
 static_df = static_df.sort_values('max_pump', ascending = False).head(10)
 
-static_df = static_df.drop(128).replace(0, np.nan)
+static_df = static_df.drop(129).replace(0, np.nan)
 
 trans_df = facility_pump.transpose()
 
@@ -83,8 +83,9 @@ for row in facility_pump.itertuples():
     
 facility_pump['max_pump'] = max_pump
 
+facility_pump = facility_pump.drop(129)
+
 facility_pump = facility_pump.sort_values('max_pump', ascending = False).head(10)
-facility_pump = facility_pump.drop(128)
 
 #%%plots
 
