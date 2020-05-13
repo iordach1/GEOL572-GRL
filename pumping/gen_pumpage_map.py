@@ -24,8 +24,8 @@ illimap = {'proj': 'lcc', # Lambert Conformal Conic
      'lat_0': 33,
      'lat_1': 33,
      'lat_2': 45,
-     'x_0': 2999994,
-     'y_0': 0}
+     'x_0': 2999994*0.304800609601219,
+     'y_0': -50}
 
 wgs_84 = {'proj': 'longlat'
 ,
@@ -46,7 +46,7 @@ df = pd.read_csv('processPumpData.csv')
 coords = df[['x','y']]
 
 for row in coords.iterrows():
-    print(pyproj.transform(prj,wgs84,row[1][0], row[1][1]))
+    print(pyproj.transform(prj,wgs84,row[1][0]/3.281, row[1][1]/3.281))
 
 #nex, ney = round(row[1][0]/0.3048,-4), round(row[1][1]/0.3048,-4)
 #swx, swy = round(swx/0.3048,-4), round(swy/0.3048,-4)
