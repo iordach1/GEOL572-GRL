@@ -13,6 +13,7 @@ import json
 def estimate_irr_acIN(acres, inches):   return acres * inches * 27000
 def estimate_irr_galAcre(acres):    return 275000 * acres
 def gpa_to_cfd(gpa): return -(gpa * 0.133681)/365.25
+def cfd_to_gpa(cfd): return -7.48052 * cfd * 365.25
 
 #%%read in data
 input_file_IWIP = "Pumpage_Data_GRL.csv"
@@ -99,6 +100,7 @@ with open("processPumpData_SPRING.json", "w") as outfile:
     outfile.write(js_pump)
 print("exported processed data to json [\"SPRING\"]")
 
+out_df = IWIP_df.iloc[:, [0,5,6,4,len(IWIP_df.columns)-1]].rename(columns = iwip_rename_dict)
 out_df = out_df.append(agIRR_df.iloc[:, [4,1,2,5,6]], ignore_index = True)
 out_df['Q'] = gpa_to_cfd(out_df['Q'])
 
