@@ -19,7 +19,7 @@ import math
 # This test was conducted in Princeton, IL
 
 # Import aquifer test data from the Excel spreadsheet
-sankoty_df=pd.read_excel("https://github.com/iordach1/GEOL572-GRL/blob/develop/aqtests/Princeton.xlsx?raw=true",index_col=0)
+sankoty_df=pd.read_excel('Princeton.xlsx', index_col=0)
 
 #Plot drawdown versus time
 sankoty_df.plot(style="o",legend=None)
@@ -87,7 +87,7 @@ print('The transmissivity T is found to be '+str(int(round(popt[1])))+' ft^2/d.'
 # This test was conducted in Sterling, IL
 
 #Import aquifer test data from the Excel spreadsheet
-tampico_df=pd.read_excel("https://github.com/iordach1/GEOL572-GRL/blob/develop/aqtests/Sterling.xlsx?raw=true",index_col=0)
+tampico_df=pd.read_excel('Sterling.xlsx', index_col=0)
 
 #Plot drawdown versus time
 tampico_df.drawdown_ft.plot(style="o",legend=None)
